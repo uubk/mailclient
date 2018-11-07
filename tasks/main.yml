@@ -1,0 +1,109 @@
+---
+  - name: Install mail server software
+    become: True
+    apt:
+      name:
+        - postfix
+        - libsasl2-modules-gssapi-mit
+      state: latest
+      update_cache: yes
+      cache_valid_time: 1800
+
+  - name: Configure postfix
+    become: True
+    template: src='{{item}}.j2' dest='/etc/postfix/{{item}}' owner=root group=root mode=0644
+    with_items:
+      - main.cf
+      - master.cf
+      - sender_canonical_maps
+    notify:
+      - restart postfix
+    tags: postfix
+    register: confchanged
+
+  - name: Store postfix auth credentials
+    become: True
+    when: mailclient_auth_enable == "yes"
+    template:
+      src: sasl_passwd.j2
+      dest: /etc/postfix/sasl_passwd
+      owner: root
+      group: root
+      mode: 0640
+    notify:
+      - restart postfix
+    register: authmap
+
+  - name: Postmap credentials
+    become: True
+    when: mailclient_auth_enable == "yes" and authmap.changed
+    command: postmap /etc/postfix/sasl_passwd
+    args:
+      chdir: /etc/postfix
+    notify:
+      - restart postfix
+
+  - name: Postmap sendermap
+    become: True
+    when: confchanged.changed
+    command: postmap /etc/postfix/sender_canonical_maps
+    args:
+      chdir: /etc/postfix
+    notify:
+      - restart postfix
+
+  - name: Configure local aliases
+    become: True
+    template:
+      src: aliases.j2
+      dest: /etc/aliases
+      owner: root
+      group: root
+      mode: 0644
+    notify: newalias
+
+  - name: Upload postfix startup chroot helper script
+    become: True
+    when: mailclient_auth_mechanism == "gssapi"
+    template:
+      src: dropin.sh.j2
+      dest: /etc/postfix/krb-helper.sh
+      owner: root
+      group: root
+      mode: 0750
+    notify: restart postfix
+
+  - name: Create postfix startup dropin directory
+    become: True
+    when: mailclient_auth_mechanism == "gssapi"
+    file:
+      path: /etc/systemd/system/postfix@.service.d
+      state: directory
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Upload postfix startup dropin
+    become: True
+    when: mailclient_auth_mechanism == "gssapi"
+    template:
+      src: dropin.conf.j2
+      dest: /etc/systemd/system/postfix@.service.d/ansible-client.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify: reload systemd-postfix
+
+  - name: Upload postfix krbhelper timer and service
+    become: True
+    when: mailclient_auth_mechanism == "gssapi"
+    template:
+      src: "{{ item }}.j2"
+      dest: "/etc/systemd/system/{{ item }}"
+      owner: root
+      group: root
+      mode: 0644
+    with_items:
+      - postfix-krbhelper.service
+      - postfix-krbhelper.timer
+    notify: reload systemd-krbhelper

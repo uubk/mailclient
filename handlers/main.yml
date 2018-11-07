@@ -1,0 +1,28 @@
+---
+  - name: restart postfix
+    become: True
+    service:
+      name: postfix@-
+      enabled: yes
+      state: restarted
+
+  - name: restart krbhelper
+    become: True
+    service:
+      name: postfix-krbhelper.timer
+      enabled: yes
+      state: restarted
+
+  - name: reload systemd-postfix
+    become: True
+    command: systemctl daemon-reload
+    notify: restart postfix
+
+  - name: reload systemd-krbhelper
+    become: True
+    command: systemctl daemon-reload
+    notify: restart krbhelper
+
+  - name: newalias
+    become: True
+    command: newaliases

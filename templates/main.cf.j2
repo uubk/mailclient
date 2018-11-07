@@ -1,0 +1,114 @@
+############################################################################
+########### Managed by ansible (role: mailclient), do not edit! ############
+############################################################################
+
+relayhost = {{ mailclient_relay }}
+
+# Don't crash on Debian stretch
+shlib_directory = /usr/lib/postfix
+
+# Config file version
+compatibility_level = 2
+
+# Queue instead of bounce?
+soft_bounce = no
+
+# Defaults preserved
+queue_directory = /var/spool/postfix
+command_directory = /usr/sbin
+data_directory = /var/lib/postfix
+daemon_directory = /usr/lib/postfix/sbin
+mail_owner = postfix
+default_privs = nobody
+unknown_local_recipient_reject_code = 550
+
+# How is this system called as seen from The Internet™?
+myhostname = {{ ansible_fqdn }}
+mydomain = {{ mailclient_domain }}
+myorigin = $mydomain
+smtpd_banner = {{ mailclient_smtpd_banner }}
+
+sender_canonical_maps = regexp:/etc/postfix/sender_canonical_maps
+
+# Listen on localhost only
+inet_interfaces = 127.0.0.1,::1
+# Listen on IPv4 and IPv6
+inet_protocols = ipv4, ipv6
+# No proxy interface atm
+#proxy_interfaces =
+
+# Which domain can this machine consider itsself the destination for (excluding virtual domains)?
+mydestination = $myhostname, localhost.$mydomain, localhost
+
+# Only relay mail for localhost
+mynetworks_style = host
+
+# Flow control: 1s * 100 SMTPD instances maximum = 100 Mails/sec
+in_flow_delay = 1s
+
+smtp_enforce_tls = yes
+
+# Configure supported cipher suites
+smtp_tls_protocols = {{ mailclient_ssl_tlsver|replace(" ", ", ") }}
+smtp_tls_mandatory_ciphers = high
+tls_high_cipherlist = {{ mailclient_ssl_tlsciphers }}
+
+smtp_dns_support_level = dnssec
+smtp_tls_security_level = may
+
+# Limit mail size to 50 MB
+message_size_limit = 52428800
+# Limit mailbox size to 500 MB. This is not actually used, but Postfix has
+# a 'sanity check' that complains if you do not also set the mailbox size
+# limit. The real limit is set and enforced by dovecot...
+mailbox_size_limit = 524288000
+
+# vrfy can be used to check if a mail adress exists, so disable it
+disable_vrfy_command = yes
+
+# Delay reject so that spamming mailservers take more time...
+smtpd_delay_reject=yes
+
+# Limit header size to 50 KB to make mailserver DoS harder
+header_size_limit = 51200
+
+# Stop accepting mails if free disk space in queue dir is less than 500 MB
+queue_minfree = 524288000
+
+# Limit the number of concurrent connections per client
+smtpd_client_connection_count_limit = 10
+smtpd_client_connection_rate_limit = 30
+
+# Limit the number of simultanious recipients
+smtpd_recipient_limit = 10
+
+# Disable ERTN. Otherwise everybody can try to flush the queue...
+smtpd_etrn_restrictions=reject
+
+# Set timeouts for different queuing stages
+delay_warning_time=3h
+maximal_queue_lifetime=2d
+bounce_queue_lifetime=1d
+
+# ADDRESS EXTENSIONS (e.g., user+foo)
+#
+# The recipient_delimiter parameter specifies the separator between
+# user names and address extensions (user+foo). See canonical(5),
+# local(8), relocated(5) and virtual(5) for the effects this has on
+# aliases, canonical, virtual, relocated and .forward file lookups.
+# Basically, the software tries user+foo and .forward+foo before
+# trying user and .forward.
+#
+# This will be required for mailman and is useful for custom sieve scripts
+recipient_delimiter = +
+
+# Relay authentication
+smtp_sasl_auth_enable = {{ mailclient_auth_enable }}
+{% if mailclient_auth_enable == "yes" %}
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_mechanism_filter = {{ mailclient_auth_mechanism }}
+import_environment = MAIL_CONFIG MAIL_DEBUG MAIL_LOGTAG TZ LANG=C KRB5CCNAME=FILE:{{ mailclient_auth_keytab_postfix }}
+{% endif %}
+
+# Rewrite mail to local users
+alias_database = hash:/etc/aliases

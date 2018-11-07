@@ -1,0 +1,4 @@
+# Managed by Ansible (role: mailclient), do not edit!
+{% for item in mailclient_to_redirect %}
+{{ item }}: {{ mailclient_system_owner }}@{{ mailclient_domain }}
+{% endfor %}

@@ -1,0 +1,25 @@
+#!/bin/bash
+############################################################################
+########### Managed by ansible (role: mailclient), do not edit! ############
+############################################################################
+
+set -e
+
+# Postfix is unfortunately unable to fetch kerberos tickets itsself.
+# Therefore, we invoke this script pre-startup and then every few hours to
+# ensure that the cache always contains a valid kerberos ticket...
+
+if [ ! -d "{{ mailclient_auth_keytab_dir }}" ] ; then
+  mkdir -p "{{ mailclient_auth_keytab_dir }}"
+fi
+
+# Get anonymous ticket for FAST armour
+kinit -c FILE:{{ mailclient_auth_keytab }} -n
+
+# Use armour ticket to obtain TGT
+kinit -c FILE:{{ mailclient_auth_keytab }} -T FILE:{{ mailclient_auth_keytab }} -k -t /etc/krb5.keytab host/{{ ansible_fqdn }}
+
+chown -R postfix "{{ mailclient_auth_keytab_dir }}"
+if [ -z "$(mailq 2>&1 | grep empty)" ] ; then
+  postqueue -f || /bin/true
+fi
