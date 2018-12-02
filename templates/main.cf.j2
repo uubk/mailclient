@@ -107,6 +107,10 @@ smtp_sasl_auth_enable = {{ mailclient_auth_enable }}
 {% if mailclient_auth_enable == "yes" %}
 smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
 smtp_sasl_mechanism_filter = {{ mailclient_auth_mechanism }}
+{% if mailclient_auth_mechanism != "gssapi" %}
+# Even when using TLS, plain or login would normally be disallowed...
+smtp_sasl_security_options =
+{% endif %}
 import_environment = MAIL_CONFIG MAIL_DEBUG MAIL_LOGTAG TZ LANG=C KRB5CCNAME=FILE:{{ mailclient_auth_keytab_postfix }}
 {% endif %}
 
