@@ -34,6 +34,9 @@ mailclient_to_redirect:
 # Relay mail over this sustem (postfix relayhost syntax)
 mailclient_relay: False
 
+# Rewrite headers for outgoing mails
+mailclient_rewrite_from_header: False
+
 # Whether to enable auth
 mailclient_auth_enable: "yes"
 # Which SASL mechanisms to use

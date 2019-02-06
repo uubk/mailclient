@@ -41,6 +41,14 @@
     notify:
       - restart postfix
 
+  - name: rebuild header map
+    become: True
+    command: postmap /etc/postfix/header_check
+    args:
+      chdir: /etc/postfix
+    notify:
+      - restart postfix
+
   - name: rebuild sasl map
     become: True
     command: postmap /etc/postfix/sasl_passwd

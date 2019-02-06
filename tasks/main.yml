@@ -20,6 +20,16 @@
       - rebuild sender map
     tags: postfix
 
+  - name: Configure postfix
+    become: True
+    template: src='{{item}}.j2' dest='/etc/postfix/{{item}}' owner=root group=root mode=0644
+    when: mailclient_rewrite_from_header
+    with_items:
+      - header_check
+    notify:
+      - rebuild header map
+    tags: postfix
+
   - name: Store postfix auth credentials
     become: True
     when: mailclient_auth_enable == "yes"

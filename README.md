@@ -15,6 +15,7 @@ To use this, you'll need an existing mailserver and some way to authenticate to 
 | `mailclient_system_owner` | `False` | All system mail (see below) will be redirected owner@domain |
 | `mailclient_to_redirect` | (see defaults/main.yml) | Which accounts to redirect mail for? |
 | `mailclient_relay` | `False` | Relay mail over this system (postfix relayhost syntax) |
+| `mailclient_rewrite_from_header` | `False` | Rewrite the `From:` header on outgoing mails |
 | `mailclient_auth_enable` | `yes` | Whether to authenticate at the relay host |
 | `mailclient_auth_mechanism` | `gssapi` | How to authenticate with the relay host |
 | `mailclient_auth_credentials` | (see defaults/main.yml) | Login for the relay host |

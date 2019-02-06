@@ -114,5 +114,11 @@ smtp_sasl_security_options =
 import_environment = MAIL_CONFIG MAIL_DEBUG MAIL_LOGTAG TZ LANG=C KRB5CCNAME=FILE:{{ mailclient_auth_keytab_postfix }}
 {% endif %}
 
+{%- if mailclient_rewrite_from_header %}
+
+# Rewrite headers for outgoing mails
+smtp_header_checks = regexp:/etc/postfix/header_check
+{% endif %}
+
 # Rewrite mail to local users
 alias_database = hash:/etc/aliases
