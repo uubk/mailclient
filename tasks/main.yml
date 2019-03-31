@@ -15,6 +15,13 @@
     with_items:
       - main.cf
       - master.cf
+    tags: postfix
+
+  - name: Configure postfix
+    become: True
+    when: mailclient_sender
+    template: src='{{item}}.j2' dest='/etc/postfix/{{item}}' owner=root group=root mode=0644
+    with_items:
       - sender_canonical_maps
     notify:
       - rebuild sender map
