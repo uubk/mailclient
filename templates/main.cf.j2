@@ -15,9 +15,9 @@ soft_bounce = no
 
 # Defaults preserved
 queue_directory = /var/spool/postfix
-command_directory = /usr/sbin
+command_directory = {{ mailclient_command_directory }}
 data_directory = /var/lib/postfix
-daemon_directory = /usr/lib/postfix/sbin
+daemon_directory = {{ mailclient_daemon_directory }}
 mail_owner = postfix
 default_privs = nobody
 unknown_local_recipient_reject_code = 550
@@ -111,7 +111,11 @@ smtp_sasl_mechanism_filter = {{ mailclient_auth_mechanism }}
 # Even when using TLS, plain or login would normally be disallowed...
 smtp_sasl_security_options =
 {% endif %}
+{% if mailclient_chroot %}
 import_environment = MAIL_CONFIG MAIL_DEBUG MAIL_LOGTAG TZ LANG=C KRB5CCNAME=FILE:{{ mailclient_auth_keytab_postfix }}
+{% else %}
+import_environment = MAIL_CONFIG MAIL_DEBUG MAIL_LOGTAG TZ LANG=C KRB5CCNAME=FILE:{{ mailclient_auth_keytab }}
+{% endif %}
 {% endif %}
 
 # Rewrite mail to local users
