@@ -1,0 +1,6 @@
+---
+
+mailclient_postfix_service: "postfix@-"
+mailclient_command_directory: /usr/sbin
+mailclient_daemon_directory: /usr/lib/postfix/sbin
+

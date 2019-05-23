@@ -1,4 +1,7 @@
 ---
+
+  - include_tasks: variables.yml
+
   - name: Install mail server software
     become: True
     apt:
@@ -8,6 +11,16 @@
       state: present
       update_cache: yes
       cache_valid_time: 1800
+    when: ansible_distribution == "Debian"
+
+  - name: Install mail server software
+    become: True
+    package:
+      state: present
+      name:
+        - postfix
+        - cyrus-sasl-gssapi
+    when: ansible_distribution == "Archlinux"
 
   - name: Configure postfix
     become: True
