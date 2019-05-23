@@ -2,7 +2,7 @@
   - name: restart postfix
     become: True
     service:
-      name: "{{ postfix_service }}"
+      name: "{{ mailclient_postfix_service }}"
       enabled: yes
       state: restarted
 
@@ -16,7 +16,7 @@
   - name: reload systemd-postfix
     become: True
     service:
-      name: "{{ postfix_service }}"
+      name: "{{ mailclient_postfix_service }}"
       enabled: yes
       state: restarted
       daemon_reload: yes

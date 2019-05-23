@@ -1,11 +1,6 @@
 ---
-  - set_fact:
-      postfix_service: "postfix@-"
-    when: ansible_distribution == "Debian"
 
-  - set_fact:
-      postfix_service: "postfix"
-    when: ansible_distribution == "Archlinux"
+  - include_tasks: variables.yml
 
   - name: Install mail server software
     become: True
