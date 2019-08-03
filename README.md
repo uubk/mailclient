@@ -18,6 +18,7 @@ To use this, you'll need an existing mailserver and some way to authenticate to 
 | `mailclient_auth_enable` | `yes` | Whether to authenticate at the relay host |
 | `mailclient_auth_mechanism` | `gssapi` | How to authenticate with the relay host |
 | `mailclient_auth_credentials` | (see defaults/main.yml) | Login for the relay host |
+| `mailclient_disable_ipv6` | (see defaults/main.yml) | Disable IPv6 relaying |
 
 ## License
 GPLv3

@@ -30,10 +30,17 @@ smtpd_banner = {{ mailclient_smtpd_banner }}
 
 sender_canonical_maps = regexp:/etc/postfix/sender_canonical_maps
 
+{% if not mailclient_disable_ipv6 %}
 # Listen on localhost only
 inet_interfaces = 127.0.0.1,::1
 # Listen on IPv4 and IPv6
 inet_protocols = ipv4, ipv6
+{% else %}
+# Listen on localhost only
+inet_interfaces = 127.0.0.1
+# Listen on IPv4 only
+inet_protocols = ipv4
+{% endif %}
 # No proxy interface atm
 #proxy_interfaces =
 
