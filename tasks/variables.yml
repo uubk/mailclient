@@ -6,3 +6,15 @@
 - name: Include OS-specific variables (Archlinux).
   include_vars: "Archlinux.yml"
   when: ansible_os_family == "Archlinux"
+
+- fail:
+    msg: "Bailing out: mailclient_sender is not set"
+  when: mailclient_sender == ''
+
+- fail:
+    msg: "Bailing out: mailclient_domain is not set"
+  when: mailclient_domain == ''
+
+- fail:
+    msg: "Bailing out: mailclient_system_owner is not set"
+  when: mailclient_system_owner == ''
