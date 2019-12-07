@@ -33,6 +33,14 @@
     become: True
     command: newaliases
 
+  - name: rebuild virtual map
+    become: True
+    command: postmap /etc/postfix/virtual
+    args:
+      chdir: /etc/postfix
+    notify:
+      - restart postfix
+
   - name: rebuild sender map
     become: True
     command: postmap /etc/postfix/sender_canonical_maps

@@ -55,6 +55,16 @@
       mode: 0644
     notify: newalias
 
+  - name: Configure local aliases
+    become: True
+    template:
+      src: virtual.j2
+      dest: /etc/postfix/virtual
+      owner: root
+      group: root
+      mode: 0644
+    notify: rebuild virtual map
+
   - name: Upload postfix startup chroot helper script
     become: True
     when: mailclient_auth_mechanism == "gssapi"
