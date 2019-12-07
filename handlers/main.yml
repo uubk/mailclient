@@ -36,23 +36,17 @@
   - name: rebuild virtual map
     become: True
     command: postmap /etc/postfix/virtual
-    args:
-      chdir: /etc/postfix
     notify:
       - restart postfix
 
   - name: rebuild sender map
     become: True
     command: postmap /etc/postfix/sender_canonical_maps
-    args:
-      chdir: /etc/postfix
     notify:
       - restart postfix
 
   - name: rebuild sasl map
     become: True
     command: postmap /etc/postfix/sasl_passwd
-    args:
-      chdir: /etc/postfix
     notify:
       - restart postfix
