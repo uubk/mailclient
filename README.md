@@ -12,7 +12,7 @@ To use this, you'll need an existing mailserver and some way to authenticate to 
 | ---- | ------------- | ----------- |
 | `mailclient_sender` | `False` | Mail source is rewritten to sender@domain |
 | `mailclient_domain` | `False` | The base domain this system belongs to |
-| `mailclient_system_owner` | `False` | All system mail (see below) will be redirected owner@domain |
+| `mailclient_system_owner` | `False` | All system mail (see below) will be redirected to this address |
 | `mailclient_to_redirect` | (see defaults/main.yml) | Which accounts to redirect mail for? |
 | `mailclient_relay` | `False` | Relay mail over this system (postfix relayhost syntax) |
 | `mailclient_auth_enable` | `yes` | Whether to authenticate at the relay host |
