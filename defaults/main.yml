@@ -28,7 +28,6 @@ mailclient_to_redirect:
   - haproxy
   - nagios
   - root
-  - maxf
   - postfix
 
 # Relay mail over this sustem (postfix relayhost syntax)
