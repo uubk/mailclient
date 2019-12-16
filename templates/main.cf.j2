@@ -28,7 +28,7 @@ mydomain = {{ mailclient_domain }}
 myorigin = $mydomain
 smtpd_banner = {{ mailclient_smtpd_banner }}
 
-{% if mailclient_sender %}
+{% if mailclient_sender is defined %}
 sender_canonical_maps = regexp:/etc/postfix/sender_canonical_maps
 {% else %}
 # Sender rewriting is explicitely disabled
