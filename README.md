@@ -10,8 +10,9 @@ To use this, you'll need an existing mailserver and some way to authenticate to 
 ## Configuration
 | Name | Default value | Description |
 | ---- | ------------- | ----------- |
-| `mailclient_sender` | `False` | Mail source is rewritten to sender@domain |
-| `mailclient_domain` | `False` | The base domain this system belongs to |
+| `mailclient_sender` | `` | Mail source is rewritten to sender@domain |
+| `mailclient_domain` | `` | The base domain this system belongs to |
+| `mailclient_system_owner_include_domain` | `True` | (see defaults/main.yml) For backwards compatibility set to `True` |
 | `mailclient_system_owner` | `False` | All system mail (see below) will be redirected to this address |
 | `mailclient_to_redirect` | (see defaults/main.yml) | Which accounts to redirect mail for? |
 | `mailclient_relay` | `False` | Relay mail over this system (postfix relayhost syntax) |
