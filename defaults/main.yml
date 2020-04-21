@@ -1,9 +1,11 @@
 # All mail will be sent from sender@domain
-mailclient_sender: False
-mailclient_domain: False
+mailclient_sender: ''
+mailclient_domain: ''
 
-# All mails to root etc. will be redirected to this@domain
-mailclient_system_owner: False
+# All mails to root etc. will be redirected to {{ mailclient_system_owner }}@{{ mailclient_domain }} if True
+# If False mailclient_system_owner has to be a full address. Set to True for backwards compatibility.
+mailclient_system_owner_include_domain: True
+mailclient_system_owner: ''
 mailclient_to_redirect:
   - mailer-daemon # Debian defualts
   - postmaster
@@ -28,7 +30,6 @@ mailclient_to_redirect:
   - haproxy
   - nagios
   - root
-  - maxf
   - postfix
 
 # Relay mail over this sustem (postfix relayhost syntax)
