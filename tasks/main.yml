@@ -1,6 +1,7 @@
 ---
 
-  - include_tasks: variables.yml
+  - import_tasks: variables.yml
+    tags: [ always ]
 
   - name: Install mail server software
     become: True
