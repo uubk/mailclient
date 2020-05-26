@@ -13,11 +13,15 @@ if [ ! -d "{{ mailclient_auth_keytab_dir }}" ] ; then
   mkdir -p "{{ mailclient_auth_keytab_dir }}"
 fi
 
+{% if mailclient_auth_pkinit %}
 # Get anonymous ticket for FAST armour
 kinit -c FILE:{{ mailclient_auth_keytab }} -n
 
 # Use armour ticket to obtain TGT
 kinit -c FILE:{{ mailclient_auth_keytab }} -T FILE:{{ mailclient_auth_keytab }} -k -t /etc/krb5.keytab host/{{ ansible_fqdn }}
+{% else %}
+kinit -c FILE:{{ mailclient_auth_keytab }} -k -t /etc/krb5.keytab host/{{ ansible_fqdn }}
+{% endif %}
 
 chown -R postfix "{{ mailclient_auth_keytab_dir }}"
 if [ -z "$(mailq 2>&1 | grep empty)" ] ; then
