@@ -45,6 +45,8 @@ mailclient_auth_keytab_dir: "/var/spool/postfix/kerberos"
 mailclient_auth_keytab: "{{ mailclient_auth_keytab_dir }}/krb5_ccache"
 # When using GSSAPI, where is the cache located (postfix view)
 mailclient_auth_keytab_postfix: "/kerberos/krb5_ccache"
+# Use anonymous pkinit to obtain FAST armour
+mailclient_auth_pkinit: True
 # When auth is enabled ... how to authenticate?
 mailclient_auth_credentials: "{{ mailclient_domain }}   gssapi:nopassword"
 # Run in a chroot?
